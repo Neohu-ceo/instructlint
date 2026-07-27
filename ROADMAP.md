@@ -11,7 +11,7 @@
 
 - Safe autofixes for missing frontmatter and canonical imports
 - Instruction token-budget estimates
-- Reusable GitHub Action with annotated pull-request output
+- Annotated pull-request output from the reusable GitHub Action
 
 The roadmap follows reported real-world failures. Please open a minimal fixture
 before proposing a broad heuristic.

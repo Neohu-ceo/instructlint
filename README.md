@@ -96,15 +96,18 @@ can see likely overlap before opening an agent session.
 
 ```text
 $ instructlint scan examples/conflicted-repo
-InstructLint 0.1.0 — 3 instruction file(s)
-✗ ERROR   CNF001 AGENTS.md:6  contradicts CLAUDE.md:3 about “use npm installs”
-! WARNING REF001 AGENTS.md:8  path reference does not exist: docs/architecture.md
-! WARNING PKG002 CLAUDE.md:3  instruction uses yarn, but the root lockfile selects npm
+InstructLint 0.1.1 — 3 instruction file(s)
+✗ ERROR   CNF001 AGENTS.md:3  contradicts CLAUDE.md:3 about “use npm installs”
+! WARNING REF001 AGENTS.md:5  path reference does not exist: docs/architecture.md
+! WARNING PKG002 CLAUDE.md:4  instruction uses yarn, but the root lockfile selects npm
 
 1 error(s), 2 warning(s), 0 info
 ```
 
 ## CI
+
+The reusable action installs and runs InstructLint without an API key or write
+permissions:
 
 ```yaml
 name: Agent instruction lint
@@ -118,12 +121,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: Neohu-ceo/instructlint@v0.1.1
         with:
-          python-version: "3.12"
-      - run: pip install git+https://github.com/Neohu-ceo/instructlint.git@v0.1.0
-      - run: instructlint scan . --fail-on warning
+          fail-on: warning
 ```
+
+Inputs are `path`, `fail-on`, `format`, `max-bytes`, and `python-version`.
+Pinning the exact release keeps CI reproducible.
 
 ## Where it fits
 
