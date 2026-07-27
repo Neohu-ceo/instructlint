@@ -96,7 +96,7 @@ can see likely overlap before opening an agent session.
 
 ```text
 $ instructlint scan examples/conflicted-repo
-InstructLint 0.1.1 — 3 instruction file(s)
+InstructLint 0.1.2 — 3 instruction file(s)
 ✗ ERROR   CNF001 AGENTS.md:3  contradicts CLAUDE.md:3 about “use npm installs”
 ! WARNING REF001 AGENTS.md:5  path reference does not exist: docs/architecture.md
 ! WARNING PKG002 CLAUDE.md:4  instruction uses yarn, but the root lockfile selects npm
@@ -120,14 +120,18 @@ jobs:
   instructlint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: Neohu-ceo/instructlint@v0.1.1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: Neohu-ceo/instructlint@v0.1.2
         with:
           fail-on: warning
 ```
 
 Inputs are `path`, `fail-on`, `format`, `max-bytes`, and `python-version`.
-Pinning the exact release keeps CI reproducible.
+The exact InstructLint release avoids a floating major tag; replace it with the
+release commit SHA if your policy requires an immutable reference. The action's
+upstream dependencies are pinned to verified commit SHAs and monitored by
+Dependabot. Self-hosted runners need Actions Runner v2.327.1 or newer for the
+Node 24 runtime used by `setup-python`.
 
 ## Where it fits
 
