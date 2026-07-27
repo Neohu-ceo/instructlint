@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="430" viewBox="0 0 1120 430" role="img" aria-labelledby="title desc">
+  <title id="title">InstructLint terminal output</title>
+  <desc id="desc">A terminal showing contradictory, stale, and unsafe agent instructions.</desc>
+  <rect width="1120" height="430" rx="18" fill="#0d1117"/>
+  <rect width="1120" height="54" rx="18" fill="#161b22"/>
+  <rect y="36" width="1120" height="18" fill="#161b22"/>
+  <circle cx="28" cy="27" r="7" fill="#ff5f56"/>
+  <circle cx="52" cy="27" r="7" fill="#ffbd2e"/>
+  <circle cx="76" cy="27" r="7" fill="#27c93f"/>
+  <text x="560" y="33" text-anchor="middle" fill="#8b949e" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="15">instructlint scan .</text>
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="17">
+    <text x="30" y="94" fill="#c9d1d9">$ instructlint scan .</text>
+    <text x="30" y="134" fill="#58a6ff">InstructLint 0.1.0 — 4 instruction file(s)</text>
+    <text x="30" y="184" fill="#ff7b72">✗ ERROR   CNF001  AGENTS.md:12</text>
+    <text x="438" y="184" fill="#c9d1d9">contradicts CLAUDE.md:8 about “run npm install”</text>
+    <text x="52" y="216" fill="#8b949e">↳ Keep one scoped source of truth or state explicit precedence.</text>
+    <text x="30" y="266" fill="#d29922">! WARNING REF001  .cursor/rules/api.mdc:9</text>
+    <text x="516" y="266" fill="#c9d1d9">path does not exist: docs/api.md</text>
+    <text x="30" y="316" fill="#d29922">! WARNING PKG002  CLAUDE.md:8</text>
+    <text x="438" y="316" fill="#c9d1d9">uses yarn, root lockfile selects npm</text>
+    <text x="30" y="378" fill="#ff7b72">1 error</text>
+    <text x="122" y="378" fill="#8b949e">·</text>
+    <text x="145" y="378" fill="#d29922">2 warnings</text>
+    <text x="267" y="378" fill="#8b949e">· 0 info</text>
+  </g>
+</svg>

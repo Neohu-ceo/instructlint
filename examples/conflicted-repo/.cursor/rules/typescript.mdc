@@ -1,0 +1,5 @@
+---
+globs: "**/*.ts"
+---
+
+Use strict TypeScript and avoid implicit `any`.

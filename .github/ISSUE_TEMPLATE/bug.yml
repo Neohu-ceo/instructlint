@@ -1,0 +1,35 @@
+name: Bug report
+description: Report a crash, wrong diagnostic, or false positive
+title: "[bug] "
+labels: ["bug", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: Thanks for including the smallest instruction fixture that reproduces this.
+  - type: input
+    id: version
+    attributes:
+      label: InstructLint version
+      placeholder: "0.1.0"
+    validations:
+      required: true
+  - type: textarea
+    id: fixture
+    attributes:
+      label: Minimal fixture
+      description: Paste the smallest safe instruction files and tree needed to reproduce.
+    validations:
+      required: true
+  - type: textarea
+    id: observed
+    attributes:
+      label: Observed and expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Operating system, Python version, and command.
+    validations:
+      required: true

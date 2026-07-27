@@ -1,0 +1,2 @@
+# Intentional failing fixture used by tests and documentation.
+examples/conflicted-repo/**

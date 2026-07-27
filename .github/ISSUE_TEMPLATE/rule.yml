@@ -1,0 +1,36 @@
+name: New rule proposal
+description: Propose a deterministic instruction check with a real fixture
+title: "[rule] "
+labels: ["enhancement", "rule"]
+body:
+  - type: textarea
+    id: failure
+    attributes:
+      label: Failure mode
+      description: What did an agent instruction cause in a real repository?
+    validations:
+      required: true
+  - type: textarea
+    id: fixture
+    attributes:
+      label: Minimal public fixture
+      description: Show both a positive and a negative example.
+    validations:
+      required: true
+  - type: textarea
+    id: detection
+    attributes:
+      label: Deterministic detection idea
+      description: Explain how to detect this without executing code or calling a model.
+    validations:
+      required: true
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Suggested severity
+      options:
+        - info
+        - warning
+        - error
+    validations:
+      required: true
