@@ -5,6 +5,14 @@ semantic versioning.
 
 ## [Unreleased]
 
+## [0.1.2] - 2026-07-28
+
+### Security
+
+- Pin all upstream GitHub Actions to full, verified commit SHAs.
+- Upgrade `actions/checkout` to 7.0.1 and `actions/setup-python` to 7.0.0.
+- Add weekly Dependabot monitoring for workflow and root-action dependencies.
+
 ## [0.1.1] - 2026-07-27
 
 ### Added
@@ -24,6 +32,7 @@ semantic versioning.
 - Path-scope explanation for common coding-agent tools.
 - Zero-runtime-dependency Python CLI and CI workflow.
 
-[Unreleased]: https://github.com/Neohu-ceo/instructlint/compare/v0.1.1...HEAD
+[Unreleased]: https://github.com/Neohu-ceo/instructlint/compare/v0.1.2...HEAD
+[0.1.2]: https://github.com/Neohu-ceo/instructlint/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/Neohu-ceo/instructlint/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/Neohu-ceo/instructlint/releases/tag/v0.1.0
