@@ -30,7 +30,8 @@ runtime dependencies.
 Recognized sources include `AGENTS.md`, `AGENT.md`, `CLAUDE.md`, `GEMINI.md`,
 `SKILL.md`, `.cursorrules`, `.cursor/rules/`, Copilot instruction files,
 Copilot custom agents in `.github/agents/`, Windsurf, Cline, Roo, Amazon Q, and
-JetBrains rule directories.
+JetBrains rule directories. Claude project subagents in `.claude/agents/` are
+recognized for both Claude Code and compatible Copilot CLI sessions.
 
 ## Install
 
