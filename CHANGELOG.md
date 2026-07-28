@@ -5,6 +5,10 @@ semantic versioning.
 
 ## [Unreleased]
 
+### Added
+
+- Test and advertise support for Python 3.14.
+
 ## [0.1.2] - 2026-07-28
 
 ### Security
