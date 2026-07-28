@@ -22,6 +22,7 @@ runtime dependencies.
 - Missing `@imports`, Markdown links, and repository-relative paths
 - Destructive shell and Git commands presented as approved instructions
 - Cursor and Copilot path rules with missing activation metadata
+- Duplicate Claude subagent names with nondeterministic loading
 - Package-manager commands that disagree with the committed lockfile
 - Duplicated normative rules that are likely to drift
 - Oversized or empty context files and broken instruction symlinks

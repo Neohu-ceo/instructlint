@@ -4,7 +4,7 @@ import fnmatch
 import os
 import re
 from collections import defaultdict
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 
 from .discovery import IGNORED_DIRECTORIES, discover_instruction_files
 from .frontmatter import parse_frontmatter
@@ -563,6 +563,76 @@ def _check_duplicates(files: list[InstructionFile]) -> list[Diagnostic]:
     return diagnostics
 
 
+def _claude_agent_scope(instruction: InstructionFile) -> str | None:
+    parts = PurePosixPath(instruction.relative_path).parts
+    anchors = [
+        index
+        for index in range(len(parts) - 1)
+        if parts[index : index + 2] == (".claude", "agents")
+    ]
+    if not anchors:
+        return None
+    return PurePosixPath(*parts[: anchors[-1] + 2]).as_posix()
+
+
+def _frontmatter_key_line(text: str, key: str) -> int:
+    lines = text.splitlines()
+    if not lines or lines[0].strip() != "---":
+        return 1
+    for line_number, line in enumerate(lines[1:], start=2):
+        if line.strip() == "---":
+            break
+        if re.match(rf"^{re.escape(key)}\s*:", line):
+            return line_number
+    return 1
+
+
+def _check_claude_agent_names(files: list[InstructionFile]) -> list[Diagnostic]:
+    occurrences: dict[tuple[str, str], list[tuple[InstructionFile, int]]] = defaultdict(
+        list
+    )
+    for instruction in files:
+        if instruction.kind != "claude-agent" or instruction.broken_symlink:
+            continue
+        metadata, _, _, frontmatter_error = parse_frontmatter(instruction.text)
+        name = metadata.get("name")
+        scope = _claude_agent_scope(instruction)
+        if (
+            frontmatter_error
+            or not scope
+            or not isinstance(name, str)
+            or not name.strip()
+        ):
+            continue
+        occurrences[(scope, name.strip())].append(
+            (instruction, _frontmatter_key_line(instruction.text, "name"))
+        )
+
+    diagnostics: list[Diagnostic] = []
+    for (scope, name), raw_locations in sorted(occurrences.items()):
+        locations = sorted(
+            raw_locations, key=lambda location: location[0].relative_path
+        )
+        if len(locations) < 2:
+            continue
+        first_file, first_line = locations[0]
+        others = ", ".join(item.relative_path for item, _ in locations[1:4])
+        diagnostics.append(
+            _diagnostic(
+                "SCP005",
+                "warning",
+                f'Claude subagent name "{name}" is also declared by {others}',
+                first_file,
+                first_line,
+                (
+                    f"Keep one definition for this name under {scope}; move archived "
+                    "files outside the agents tree or give them unique names."
+                ),
+            )
+        )
+    return diagnostics
+
+
 def _check_package_managers(
     root: Path, files: list[InstructionFile]
 ) -> list[Diagnostic]:
@@ -703,6 +773,7 @@ def scan_repository(root: str | Path, max_bytes: int = 12_000) -> ScanResult:
                 gitignore_patterns,
             )
         )
+    result.diagnostics.extend(_check_claude_agent_names(files))
     result.diagnostics.extend(_check_conflicts(files))
     result.diagnostics.extend(_check_duplicates(files))
     result.diagnostics.extend(_check_package_managers(root_path, files))

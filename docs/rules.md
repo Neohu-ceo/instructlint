@@ -14,6 +14,7 @@ exit policy; warnings and info findings can be promoted with `--fail-on`.
 | `SCP002` | warning | A Cursor rule has no activation metadata |
 | `SCP003` | warning | A Copilot custom agent has no required `description` |
 | `SCP004` | warning | A Claude subagent lacks required frontmatter |
+| `SCP005` | warning | A Claude subagent name is duplicated within one agents tree |
 | `DNG001` | error | An instruction approves recursive forced deletion |
 | `DNG002` | error | An instruction approves `git reset --hard` |
 | `DNG003` | error | An instruction approves destructive `git clean` |
@@ -36,3 +37,9 @@ prompt for maintainers and does not imply that a repository is broken.
 
 InstructLint avoids generic prose scoring. Every finding must point to a location
 and offer a concrete remediation.
+
+`SCP005` groups definitions by their containing `.claude/agents/` tree.
+[Claude Code scans subfolders recursively](https://code.claude.com/docs/en/sub-agents)
+and identifies project subagents by the frontmatter `name`, so moving an old file
+into an archive subfolder does not remove it from consideration. A separate
+`.claude/agents/` directory in a nested project is treated as its own scope.

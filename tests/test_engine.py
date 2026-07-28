@@ -197,6 +197,33 @@ class EngineTests(unittest.TestCase):
             "Claude subagent is missing required frontmatter: name, description",
         )
 
+    def test_reports_duplicate_claude_agent_names_in_one_tree(self):
+        self.repo.write(
+            ".claude/agents/reviewer.md",
+            "---\nname: reviewer\ndescription: Review changes\n---\nReview code.\n",
+        )
+        self.repo.write(
+            ".claude/agents/_archive/old-reviewer.md",
+            "---\nname: reviewer\ndescription: Former reviewer\n---\nReview code.\n",
+        )
+        duplicate = next(
+            item
+            for item in scan_repository(self.repo.root).diagnostics
+            if item.code == "SCP005"
+        )
+        self.assertEqual(duplicate.severity, "warning")
+        self.assertEqual(duplicate.path, ".claude/agents/_archive/old-reviewer.md")
+        self.assertEqual(duplicate.line, 2)
+        self.assertIn(".claude/agents/reviewer.md", duplicate.message)
+
+    def test_allows_same_claude_agent_name_in_nested_project_scope(self):
+        definition = (
+            "---\nname: reviewer\ndescription: Review changes\n---\nReview code.\n"
+        )
+        self.repo.write(".claude/agents/reviewer.md", definition)
+        self.repo.write("packages/api/.claude/agents/reviewer.md", definition)
+        self.assertNotIn("SCP005", self.codes())
+
     def test_sarif_contains_location_and_rule(self):
         self.repo.write("AGENTS.md", "Run rm -rf build.\nRun pytest.\n")
         document = to_sarif(scan_repository(self.repo.root))
