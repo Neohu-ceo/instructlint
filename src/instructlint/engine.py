@@ -382,6 +382,16 @@ def _check_file(
                     hint='Add frontmatter such as applyTo: "**/*.ts".',
                 )
             )
+    elif instruction.kind == "copilot-agent" and not metadata.get("description"):
+        diagnostics.append(
+            _diagnostic(
+                "SCP003",
+                "warning",
+                "Copilot custom agent has no required description",
+                instruction,
+                hint='Add YAML frontmatter such as description: "Reviews API changes".',
+            )
+        )
     elif (
         instruction.kind == "cursor"
         and instruction.relative_path.startswith(".cursor/rules/")

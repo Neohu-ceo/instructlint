@@ -8,6 +8,7 @@ semantic versioning.
 ### Added
 
 - Test and advertise support for Python 3.14.
+- Discover GitHub Copilot custom agents and validate their required description.
 
 ## [0.1.2] - 2026-07-28
 

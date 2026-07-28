@@ -53,6 +53,12 @@ def classify(relative_path: str) -> str | None:
         name.endswith(".instructions.md") or path.suffix == ".md"
     ):
         return "copilot"
+    if (
+        _contains_pair(parts, ".github", "agents")
+        and path.suffix == ".md"
+        and name.lower() != "readme.md"
+    ):
+        return "copilot-agent"
     if _contains_pair(parts, ".cursor", "rules") and path.suffix in {".md", ".mdc"}:
         return "cursor"
     if _contains_pair(parts, ".windsurf", "rules") and path.suffix == ".md":

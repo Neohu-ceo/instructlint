@@ -52,10 +52,16 @@ class EngineTests(unittest.TestCase):
             ".github/instructions/web.instructions.md",
             '---\napplyTo: "**/*.ts"\n---\nUse strict mode.\n',
         )
+        self.repo.write(
+            ".github/agents/reviewer.agent.md",
+            "---\ndescription: Review API changes\n---\nRun the API tests.\n",
+        )
+        self.repo.write(".github/agents/README.md", "Custom agent documentation.\n")
         result = scan_repository(self.repo.root)
-        self.assertEqual(len(result.files), 4)
+        self.assertEqual(len(result.files), 5)
         self.assertNotIn("SCP001", [item.code for item in result.diagnostics])
         self.assertNotIn("SCP002", [item.code for item in result.diagnostics])
+        self.assertNotIn("SCP003", [item.code for item in result.diagnostics])
 
     def test_discovers_nested_vendor_directories(self):
         self.repo.write("AGENTS.md", "Run pytest.\n")
@@ -162,10 +168,15 @@ class EngineTests(unittest.TestCase):
             ".github/instructions/web.instructions.md",
             "Use TypeScript strict mode.\n",
         )
+        self.repo.write(
+            ".github/agents/reviewer.agent.md",
+            "Review API changes.\n",
+        )
         self.repo.write(".cursor/rules/web.mdc", "Use TypeScript strict mode.\n")
         codes = self.codes()
         self.assertIn("SCP001", codes)
         self.assertIn("SCP002", codes)
+        self.assertIn("SCP003", codes)
 
     def test_sarif_contains_location_and_rule(self):
         self.repo.write("AGENTS.md", "Run rm -rf build.\nRun pytest.\n")
@@ -193,6 +204,22 @@ class EngineTests(unittest.TestCase):
         self.assertTrue(states["AGENTS.md"])
         self.assertTrue(states[".cursor/rules/python.mdc"])
         self.assertFalse(states[".cursor/rules/web.mdc"])
+
+    def test_explain_marks_copilot_custom_agent_as_on_demand(self):
+        self.repo.write("AGENTS.md", "Run pytest.\n")
+        self.repo.write(
+            ".github/agents/reviewer.md",
+            "---\ndescription: Review API changes\n---\nRun the API tests.\n",
+        )
+        matches = explain_target(self.repo.root, "src/api/client.py", "copilot")
+        custom_agent = next(
+            item for item in matches if item.path == ".github/agents/reviewer.md"
+        )
+        self.assertFalse(custom_agent.applies)
+        self.assertEqual(
+            custom_agent.reason,
+            "custom agent loads on invocation, not by file path",
+        )
 
 
 if __name__ == "__main__":
