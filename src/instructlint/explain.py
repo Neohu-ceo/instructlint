@@ -23,7 +23,7 @@ TOOL_KINDS = {
     "codex": {"agents", "agent", "skill"},
     "claude": {"claude", "skill"},
     "cursor": {"cursor", "agents", "agent"},
-    "copilot": {"copilot", "agents"},
+    "copilot": {"copilot", "copilot-agent", "agents"},
     "gemini": {"gemini", "agents", "agent"},
     "windsurf": {"windsurf", "agents", "agent"},
 }
@@ -111,6 +111,11 @@ def explain_target(
             applies, reason = True, "alwaysApply is true"
         elif instruction.kind == "skill":
             applies, reason = False, "skill loads on demand, not by file path"
+        elif instruction.kind == "copilot-agent":
+            applies, reason = (
+                False,
+                "custom agent loads on invocation, not by file path",
+            )
         else:
             applies, reason = True, "repository-wide rule"
         matches.append(
