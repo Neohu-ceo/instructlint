@@ -392,6 +392,21 @@ def _check_file(
                 hint='Add YAML frontmatter such as description: "Reviews API changes".',
             )
         )
+    elif instruction.kind == "claude-agent":
+        missing_fields = [
+            field for field in ("name", "description") if not metadata.get(field)
+        ]
+        if missing_fields:
+            diagnostics.append(
+                _diagnostic(
+                    "SCP004",
+                    "warning",
+                    "Claude subagent is missing required frontmatter: "
+                    + ", ".join(missing_fields),
+                    instruction,
+                    hint="Add YAML frontmatter with a unique name and clear description.",
+                )
+            )
     elif (
         instruction.kind == "cursor"
         and instruction.relative_path.startswith(".cursor/rules/")

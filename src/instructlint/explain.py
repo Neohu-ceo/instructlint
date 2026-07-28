@@ -21,9 +21,9 @@ class Match:
 TOOL_KINDS = {
     "all": None,
     "codex": {"agents", "agent", "skill"},
-    "claude": {"claude", "skill"},
+    "claude": {"claude", "claude-agent", "skill"},
     "cursor": {"cursor", "agents", "agent"},
-    "copilot": {"copilot", "copilot-agent", "agents"},
+    "copilot": {"copilot", "copilot-agent", "claude-agent", "agents"},
     "gemini": {"gemini", "agents", "agent"},
     "windsurf": {"windsurf", "agents", "agent"},
 }
@@ -111,7 +111,7 @@ def explain_target(
             applies, reason = True, "alwaysApply is true"
         elif instruction.kind == "skill":
             applies, reason = False, "skill loads on demand, not by file path"
-        elif instruction.kind == "copilot-agent":
+        elif instruction.kind in {"claude-agent", "copilot-agent"}:
             applies, reason = (
                 False,
                 "custom agent loads on invocation, not by file path",

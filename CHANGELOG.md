@@ -9,6 +9,7 @@ semantic versioning.
 
 - Test and advertise support for Python 3.14.
 - Discover GitHub Copilot custom agents and validate their required description.
+- Discover Claude project subagents and validate their required metadata.
 
 ## [0.1.2] - 2026-07-28
 

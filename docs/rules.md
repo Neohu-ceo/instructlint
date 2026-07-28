@@ -13,6 +13,7 @@ exit policy; warnings and info findings can be promoted with `--fail-on`.
 | `SCP001` | warning | A path-specific Copilot file has no `applyTo` |
 | `SCP002` | warning | A Cursor rule has no activation metadata |
 | `SCP003` | warning | A Copilot custom agent has no required `description` |
+| `SCP004` | warning | A Claude subagent lacks required frontmatter |
 | `DNG001` | error | An instruction approves recursive forced deletion |
 | `DNG002` | error | An instruction approves `git reset --hard` |
 | `DNG003` | error | An instruction approves destructive `git clean` |
