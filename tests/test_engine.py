@@ -111,6 +111,14 @@ class EngineTests(unittest.TestCase):
         )
         self.assertNotIn("DNG002", self.codes())
 
+    def test_dangerous_command_classification_is_not_an_execution_instruction(self):
+        self.repo.write(
+            "AGENTS.md",
+            "Destructive actions (`rm -rf`, force push) require confirmation.\n"
+            "Run pytest.\n",
+        )
+        self.assertNotIn("DNG001", self.codes())
+
     def test_finds_direct_contradiction(self):
         self.repo.write("AGENTS.md", "Always use npm for installs.\nRun npm test.\n")
         self.repo.write("CLAUDE.md", "Never use npm for installs.\n")
