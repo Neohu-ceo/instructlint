@@ -73,6 +73,7 @@ class EngineTests(unittest.TestCase):
         self.assertNotIn("SCP003", [item.code for item in result.diagnostics])
         self.assertNotIn("SCP004", [item.code for item in result.diagnostics])
         self.assertNotIn("SCP006", [item.code for item in result.diagnostics])
+        self.assertNotIn("SCP007", [item.code for item in result.diagnostics])
 
     def test_discovers_nested_vendor_directories(self):
         self.repo.write("AGENTS.md", "Run pytest.\n")
@@ -218,6 +219,49 @@ class EngineTests(unittest.TestCase):
             "Agent Skill is missing required frontmatter: description",
         )
         self.assertIn("what the skill does and when to use it", diagnostic.hint)
+
+    def test_reports_invalid_agent_skill_name(self):
+        self.repo.write(
+            "skills/reviewer/SKILL.md",
+            "---\nname: Review--Code\ndescription: Review code changes\n---\n",
+        )
+        diagnostic = next(
+            item
+            for item in scan_repository(self.repo.root).diagnostics
+            if item.code == "SCP007"
+        )
+        self.assertEqual(diagnostic.line, 2)
+        self.assertIn("1-64 lowercase letters", diagnostic.message)
+        self.assertIn("kebab-case", diagnostic.hint)
+
+    def test_reports_agent_skill_name_directory_mismatch(self):
+        self.repo.write(
+            "skills/reviewer/SKILL.md",
+            "---\nname: code-reviewer\ndescription: Review code changes\n---\n",
+        )
+        diagnostic = next(
+            item
+            for item in scan_repository(self.repo.root).diagnostics
+            if item.code == "SCP007"
+        )
+        self.assertEqual(
+            diagnostic.message,
+            'Agent Skill name "code-reviewer" does not match parent directory '
+            '"reviewer"',
+        )
+
+    def test_reports_agent_skill_description_over_limit(self):
+        self.repo.write(
+            "skills/reviewer/SKILL.md",
+            "---\nname: reviewer\ndescription: " + "x" * 1025 + "\n---\n",
+        )
+        diagnostic = next(
+            item
+            for item in scan_repository(self.repo.root).diagnostics
+            if item.code == "SCP007"
+        )
+        self.assertEqual(diagnostic.line, 3)
+        self.assertIn("1-1024 characters", diagnostic.message)
 
     def test_reports_duplicate_claude_agent_names_in_one_tree(self):
         self.repo.write(

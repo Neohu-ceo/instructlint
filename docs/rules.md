@@ -16,6 +16,7 @@ exit policy; warnings and info findings can be promoted with `--fail-on`.
 | `SCP004` | warning | A Claude subagent lacks required frontmatter |
 | `SCP005` | warning | A Claude subagent name is duplicated within one agents tree |
 | `SCP006` | warning | An Agent Skill lacks required frontmatter |
+| `SCP007` | warning | An Agent Skill has invalid or mismatched metadata values |
 | `DNG001` | error | An instruction approves recursive forced deletion |
 | `DNG002` | error | An instruction approves `git reset --hard` |
 | `DNG003` | error | An instruction approves destructive `git clean` |
@@ -48,3 +49,8 @@ into an archive subfolder does not remove it from consideration. A separate
 `SCP006` follows the
 [GitHub Copilot CLI Agent Skill fields](https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-command-reference#skills-reference):
 both `name` and `description` are required for discovery and invocation.
+
+`SCP007` follows the
+[Agent Skills specification](https://agentskills.io/specification): `name` is
+lowercase kebab-case, contains 1-64 characters, and matches the parent directory;
+`description` contains 1-1024 characters.

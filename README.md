@@ -22,7 +22,7 @@ runtime dependencies.
 - Missing `@imports`, Markdown links, and repository-relative paths
 - Destructive shell and Git commands presented as approved instructions
 - Cursor and Copilot path rules with missing activation metadata
-- Agent Skills and custom agents missing required frontmatter
+- Agent Skills with missing, invalid, or directory-mismatched metadata
 - Duplicate Claude subagent names with nondeterministic loading
 - Package-manager commands that disagree with the committed lockfile
 - Duplicated normative rules that are likely to drift
