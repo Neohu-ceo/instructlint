@@ -59,6 +59,7 @@ CHINESE_NEGATIVE_RULE = re.compile(r"(?:禁止|不得|不要|避免|切勿)[：:
 MARKDOWN_LINK = re.compile(r"\[[^\]]+\]\(([^)]+)\)")
 AT_REFERENCE = re.compile(r"(?<![\w@])@([A-Za-z0-9_.\-/]+)")
 CODE_PATH = re.compile(r"`([^`\s]+)`")
+SKILL_NAME = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 
 PACKAGE_COMMANDS = {
     "npm": re.compile(r"\bnpm\s+[A-Za-z][\w-]*\b"),
@@ -423,6 +424,61 @@ def _check_file(
                         "Add YAML frontmatter with a unique name and a description "
                         "of what the skill does and when to use it."
                     ),
+                )
+            )
+        skill_name = metadata.get("name")
+        if skill_name:
+            name_line = _frontmatter_key_line(instruction.text, "name")
+            if (
+                not isinstance(skill_name, str)
+                or not 1 <= len(skill_name) <= 64
+                or not SKILL_NAME.fullmatch(skill_name)
+            ):
+                diagnostics.append(
+                    _diagnostic(
+                        "SCP007",
+                        "warning",
+                        (
+                            "Agent Skill name must be 1-64 lowercase letters, "
+                            "numbers, or single hyphens"
+                        ),
+                        instruction,
+                        name_line,
+                        hint=(
+                            "Use a lowercase kebab-case name without leading, "
+                            "trailing, or consecutive hyphens."
+                        ),
+                    )
+                )
+            elif skill_name != instruction.path.parent.name:
+                diagnostics.append(
+                    _diagnostic(
+                        "SCP007",
+                        "warning",
+                        (
+                            f'Agent Skill name "{skill_name}" does not match '
+                            f'parent directory "{instruction.path.parent.name}"'
+                        ),
+                        instruction,
+                        name_line,
+                        hint=(
+                            "Rename the directory or update name so the values "
+                            "match exactly."
+                        ),
+                    )
+                )
+        description = metadata.get("description")
+        if description and (
+            not isinstance(description, str) or len(description) > 1024
+        ):
+            diagnostics.append(
+                _diagnostic(
+                    "SCP007",
+                    "warning",
+                    "Agent Skill description must be a string of 1-1024 characters",
+                    instruction,
+                    _frontmatter_key_line(instruction.text, "description"),
+                    hint="Shorten description while keeping what the skill does and when to use it.",
                 )
             )
     elif (
