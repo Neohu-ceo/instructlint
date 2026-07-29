@@ -62,12 +62,17 @@ class EngineTests(unittest.TestCase):
             "---\nname: tester\ndescription: Run focused tests\n---\nRun pytest.\n",
         )
         self.repo.write(".claude/agents/README.md", "Subagent documentation.\n")
+        self.repo.write(
+            "skills/reviewer/SKILL.md",
+            "---\nname: reviewer\ndescription: Review code changes\n---\nReview code.\n",
+        )
         result = scan_repository(self.repo.root)
-        self.assertEqual(len(result.files), 6)
+        self.assertEqual(len(result.files), 7)
         self.assertNotIn("SCP001", [item.code for item in result.diagnostics])
         self.assertNotIn("SCP002", [item.code for item in result.diagnostics])
         self.assertNotIn("SCP003", [item.code for item in result.diagnostics])
         self.assertNotIn("SCP004", [item.code for item in result.diagnostics])
+        self.assertNotIn("SCP006", [item.code for item in result.diagnostics])
 
     def test_discovers_nested_vendor_directories(self):
         self.repo.write("AGENTS.md", "Run pytest.\n")
@@ -196,6 +201,23 @@ class EngineTests(unittest.TestCase):
             claude_diagnostic.message,
             "Claude subagent is missing required frontmatter: name, description",
         )
+
+    def test_reports_missing_agent_skill_metadata(self):
+        self.repo.write(
+            "skills/reviewer/SKILL.md",
+            "---\nname: reviewer\n---\nReview code changes.\n",
+        )
+        diagnostic = next(
+            item
+            for item in scan_repository(self.repo.root).diagnostics
+            if item.code == "SCP006"
+        )
+        self.assertEqual(diagnostic.severity, "warning")
+        self.assertEqual(
+            diagnostic.message,
+            "Agent Skill is missing required frontmatter: description",
+        )
+        self.assertIn("what the skill does and when to use it", diagnostic.hint)
 
     def test_reports_duplicate_claude_agent_names_in_one_tree(self):
         self.repo.write(

@@ -15,6 +15,7 @@ exit policy; warnings and info findings can be promoted with `--fail-on`.
 | `SCP003` | warning | A Copilot custom agent has no required `description` |
 | `SCP004` | warning | A Claude subagent lacks required frontmatter |
 | `SCP005` | warning | A Claude subagent name is duplicated within one agents tree |
+| `SCP006` | warning | An Agent Skill lacks required frontmatter |
 | `DNG001` | error | An instruction approves recursive forced deletion |
 | `DNG002` | error | An instruction approves `git reset --hard` |
 | `DNG003` | error | An instruction approves destructive `git clean` |
@@ -43,3 +44,7 @@ and offer a concrete remediation.
 and identifies project subagents by the frontmatter `name`, so moving an old file
 into an archive subfolder does not remove it from consideration. A separate
 `.claude/agents/` directory in a nested project is treated as its own scope.
+
+`SCP006` follows the
+[GitHub Copilot CLI Agent Skill fields](https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-command-reference#skills-reference):
+both `name` and `description` are required for discovery and invocation.

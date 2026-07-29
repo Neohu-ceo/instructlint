@@ -11,6 +11,7 @@ semantic versioning.
 - Discover GitHub Copilot custom agents and validate their required description.
 - Discover Claude project subagents and validate their required metadata.
 - Detect duplicate Claude subagent names within one recursively scanned agents tree.
+- Validate required `name` and `description` metadata in Agent Skills.
 
 ## [0.1.2] - 2026-07-28
 

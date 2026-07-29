@@ -407,6 +407,24 @@ def _check_file(
                     hint="Add YAML frontmatter with a unique name and clear description.",
                 )
             )
+    elif instruction.kind == "skill":
+        missing_fields = [
+            field for field in ("name", "description") if not metadata.get(field)
+        ]
+        if missing_fields:
+            diagnostics.append(
+                _diagnostic(
+                    "SCP006",
+                    "warning",
+                    "Agent Skill is missing required frontmatter: "
+                    + ", ".join(missing_fields),
+                    instruction,
+                    hint=(
+                        "Add YAML frontmatter with a unique name and a description "
+                        "of what the skill does and when to use it."
+                    ),
+                )
+            )
     elif (
         instruction.kind == "cursor"
         and instruction.relative_path.startswith(".cursor/rules/")
