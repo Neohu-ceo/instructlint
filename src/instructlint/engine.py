@@ -44,6 +44,12 @@ NEGATION_PREFIX = re.compile(
     r"(?:never|do\s+not|don['’]t|must\s+not|禁止|不得|不要|切勿).{0,24}$",
     re.IGNORECASE,
 )
+DANGER_CLASSIFICATION_PREFIX = re.compile(
+    r"\b(?:destructive|dangerous|unsafe|risky)\s+"
+    r"(?:actions?|commands?|operations?)"
+    r"(?:\s+(?:ahead|examples?))?\s*[:：(\[]?\s*`?$",
+    re.IGNORECASE,
+)
 
 POSITIVE_RULE = re.compile(
     r"\b(?:always|must|shall|required\s+to)\b\s*[:,-]?\s*(.+)$",
@@ -507,11 +513,15 @@ def _check_file(
             if not match:
                 continue
             prefix = line[: match.start()]
-            if NEGATION_PREFIX.search(prefix) or re.search(
-                r"\b(?:block(?:ed|s|ing)?|forbid(?:den)?|prohibit(?:ed)?|dangerous)\b|"
-                r"(?:阻止|禁止|危险)",
-                active_heading,
-                re.IGNORECASE,
+            if (
+                NEGATION_PREFIX.search(prefix)
+                or DANGER_CLASSIFICATION_PREFIX.search(prefix)
+                or re.search(
+                    r"\b(?:block(?:ed|s|ing)?|forbid(?:den)?|prohibit(?:ed)?|dangerous)\b|"
+                    r"(?:阻止|禁止|危险)",
+                    active_heading,
+                    re.IGNORECASE,
+                )
             ):
                 continue
             diagnostics.append(

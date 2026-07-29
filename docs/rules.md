@@ -40,6 +40,10 @@ prompt for maintainers and does not imply that a repository is broken.
 InstructLint avoids generic prose scoring. Every finding must point to a location
 and offer a concrete remediation.
 
+Dangerous-command diagnostics ignore prohibitions, blocked headings, and compact
+classification examples such as “Dangerous commands (`rm -rf`, …)”. An explicit
+instruction to run the same command remains an error.
+
 `SCP005` groups definitions by their containing `.claude/agents/` tree.
 [Claude Code scans subfolders recursively](https://code.claude.com/docs/en/sub-agents)
 and identifies project subagents by the frontmatter `name`, so moving an old file

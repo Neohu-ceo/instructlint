@@ -9,6 +9,11 @@ semantic versioning.
 
 - Validate Agent Skill name syntax, directory matching, and description length.
 
+### Fixed
+
+- Avoid treating destructive-command classification examples as execution
+  instructions.
+
 ## [0.1.3] - 2026-07-29
 
 ### Added
