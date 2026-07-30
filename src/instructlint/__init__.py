@@ -4,4 +4,4 @@ from .engine import scan_repository
 from .models import Diagnostic, InstructionFile, ScanResult
 
 __all__ = ["Diagnostic", "InstructionFile", "ScanResult", "scan_repository"]
-__version__ = "0.1.3"
+__version__ = "0.2.0"
