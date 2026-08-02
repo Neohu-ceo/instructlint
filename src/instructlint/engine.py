@@ -274,6 +274,7 @@ def _load_gitignore_patterns(root: Path) -> list[str]:
 
 
 def _matches_ignored_path(path: str, patterns: list[str]) -> bool:
+    path = PurePosixPath(path).as_posix()
     for raw_pattern in patterns:
         pattern = raw_pattern.rstrip("/")
         if (
