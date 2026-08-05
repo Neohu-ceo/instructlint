@@ -5,6 +5,10 @@ semantic versioning.
 
 ## [Unreleased]
 
+### Fixed
+
+- Normalize `./`-prefixed references before matching `.gitignore` patterns.
+
 ## [0.2.0] - 2026-07-30
 
 ### Added

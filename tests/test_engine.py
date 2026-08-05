@@ -143,10 +143,11 @@ class EngineTests(unittest.TestCase):
     def test_accepts_unique_shorthand_and_ignored_generated_paths(self):
         self.repo.write(
             "AGENTS.md",
-            "Read `parser.py`, `.cache/results.db`, and use `/review`.\nRun pytest.\n",
+            "Read `parser.py`, `.cache/results.db`, and use `/review`.\n"
+            "Run `./.venv/bin/python -m pytest`.\n",
         )
         self.repo.write("src/tool/parser.py", "")
-        self.repo.write(".gitignore", ".cache/\n")
+        self.repo.write(".gitignore", ".cache/\n.venv\n")
         self.assertNotIn("REF001", self.codes())
         self.assertNotIn("REF002", self.codes())
 
