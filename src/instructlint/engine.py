@@ -65,6 +65,18 @@ CHINESE_NEGATIVE_RULE = re.compile(r"(?:禁止|不得|不要|避免|切勿)[：:
 MARKDOWN_LINK = re.compile(r"\[[^\]]+\]\(([^)]+)\)")
 AT_REFERENCE = re.compile(r"(?<![\w@])@([A-Za-z0-9_.\-/]+)")
 CODE_PATH = re.compile(r"`([^`\s]+)`")
+GIT_REMOTE_REFERENCE = re.compile(
+    r"^(?:origin|upstream|fork)/[A-Za-z0-9][A-Za-z0-9._/-]*$",
+    re.IGNORECASE,
+)
+GIT_FULL_REFERENCE = re.compile(
+    r"^refs/(?:heads|remotes|tags)/[A-Za-z0-9][A-Za-z0-9._/-]*$",
+    re.IGNORECASE,
+)
+GIT_REFERENCE_CONTEXT = re.compile(
+    r"\b(?:branch(?:es)?|ref(?:erence)?s?|remote(?:s)?|tag(?:s)?)\b",
+    re.IGNORECASE,
+)
 SKILL_NAME = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 
 PACKAGE_COMMANDS = {
@@ -220,6 +232,15 @@ def _is_path_candidate(value: str) -> bool:
     )
 
 
+def _is_git_reference(value: str, line: str, start: int, end: int) -> bool:
+    if GIT_REMOTE_REFERENCE.fullmatch(value) or GIT_FULL_REFERENCE.fullmatch(value):
+        return True
+    if not value.endswith("/"):
+        return False
+    context = line[max(0, start - 48) : min(len(line), end + 48)]
+    return bool(GIT_REFERENCE_CONTEXT.search(context))
+
+
 def _references(line: str, include_code_paths: bool = True):
     seen: set[str] = set()
     prose = re.sub(r"`[^`]*`", "", line)
@@ -251,6 +272,8 @@ def _references(line: str, include_code_paths: bool = True):
     if include_code_paths:
         for match in CODE_PATH.finditer(line):
             value = match.group(1).strip().strip("'\"").rstrip(".,;:")
+            if _is_git_reference(value, line, match.start(), match.end()):
+                continue
             if value not in seen and _is_path_candidate(value):
                 seen.add(value)
                 yield value

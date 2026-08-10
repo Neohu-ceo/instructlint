@@ -8,6 +8,7 @@ semantic versioning.
 ### Fixed
 
 - Normalize `./`-prefixed references before matching `.gitignore` patterns.
+- Avoid treating Git remote refs and branch-prefix examples as repository paths.
 
 ## [0.2.0] - 2026-07-30
 
