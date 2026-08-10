@@ -143,12 +143,27 @@ class EngineTests(unittest.TestCase):
     def test_accepts_unique_shorthand_and_ignored_generated_paths(self):
         self.repo.write(
             "AGENTS.md",
-            "Read `parser.py`, `.cache/results.db`, and use `/review`.\nRun pytest.\n",
+            "Read `parser.py`, `.cache/results.db`, and use `/review`.\n"
+            "Run `./.venv/bin/python -m pytest`.\n",
         )
         self.repo.write("src/tool/parser.py", "")
-        self.repo.write(".gitignore", ".cache/\n")
+        self.repo.write(".gitignore", ".cache/\n.venv\n")
         self.assertNotIn("REF001", self.codes())
         self.assertNotIn("REF002", self.codes())
+
+    def test_git_refs_and_branch_prefixes_are_not_paths(self):
+        self.repo.write(
+            "AGENTS.md",
+            "Create a worktree on a `codex/` branch from `origin/main`.\n"
+            "Read `docs/missing.md` before editing.\n"
+            "Run pytest.\n",
+        )
+        messages = [
+            item.message
+            for item in scan_repository(self.repo.root).diagnostics
+            if item.code == "REF001"
+        ]
+        self.assertEqual(messages, ["path reference does not exist: docs/missing.md"])
 
     def test_skill_code_paths_are_caller_workspace_examples(self):
         self.repo.write("AGENTS.md", "Run pytest.\n")
